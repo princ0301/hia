@@ -52,10 +52,15 @@ class SessionManager:
         """Create a new chat session."""
         if not SessionManager.is_authenticated():
             return False, "Not authenticated"
+        # Debug user data
+        user_data = st.session_state.get('user', {})
+        if not user_data or 'id' not in user_data:
+            return False, "User ID not found in session"
         return st.session_state.auth_service.create_session(
             st.session_state.user['id']
         )
-    
+
+
     @staticmethod
     def get_user_sessions():
         """Get user's chat sessions."""

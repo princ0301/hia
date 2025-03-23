@@ -119,9 +119,11 @@ class AuthService:
             return None
 
     def create_session(self, user_id, title=None):
+        if not user_id:
+            return False, "Invalid user ID"
         try:
             current_time = datetime.now()
-            default_title = f"{current_time.strftime("%d-%m-%Y")} | {current_time.strftime("%H:%M:%S")}"
+            default_title = f"{current_time.strftime('%d-%m-%Y')} | {current_time.strftime('%H:%M:%S')}"
             
             session_data = {
                 'user_id': user_id,
@@ -131,6 +133,7 @@ class AuthService:
             result = self.supabase.table('chat_sessions').insert(session_data).execute()
             return True, result.data[0] if result.data else None
         except Exception as e:
+            st.error(f"Failed to create session: {str(e)}")  # Add this line for debugging
             return False, str(e)
 
     def get_user_sessions(self, user_id):
