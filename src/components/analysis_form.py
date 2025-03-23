@@ -71,6 +71,7 @@ def render_patient_form(pdf_contents):
             handle_form_submission(patient_name, age, gender, pdf_contents)
 
 def handle_form_submission(patient_name, age, gender, pdf_contents):
+    st.write(f"Submitting form for patient: {patient_name}")
     if not all([patient_name, age, gender]):
         st.error("Please fill in all fields")
         return
@@ -82,6 +83,14 @@ def handle_form_submission(patient_name, age, gender, pdf_contents):
         st.stop()
         return
 
+    st.write("Checking rate limit...")
+    can_analyze, error_msg = generate_analysis(None, None, check_only=True)
+    st.write(f"Rate limit check: can_analyze={can_analyze}, error_msg={error_msg}")
+    if not can_analyze:
+        st.error(error_msg)
+        st.stop()
+        return
+    
     with st.spinner("Analyzing report..."):
         # Save user message and proceed with analysis
         st.session_state.auth_service.save_chat_message(

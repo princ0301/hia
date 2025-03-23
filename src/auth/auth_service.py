@@ -133,7 +133,7 @@ class AuthService:
             result = self.supabase.table('chat_sessions').insert(session_data).execute()
             return True, result.data[0] if result.data else None
         except Exception as e:
-            st.error(f"Failed to create session: {str(e)}")  # Add this line for debugging
+            st.error(f"Failed to create session: {str(e)}")
             return False, str(e)
 
     def get_user_sessions(self, user_id):
